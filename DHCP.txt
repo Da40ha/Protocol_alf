@@ -1,0 +1,99 @@
+protocol: ARP / DHCP 
+------------------------------------
+ARP : Address resolution protocol
+------------------------------------
+
+Hardware type: Ethernet (1)
+表示發送主機使用之網路實體介面種類
+Type: ARP (0x0806)
+
+protocol type:0800
+wireshark: arp.proto.type == 0x0800
+
+ARP: IP 位址對應到MAC 位址
+
+Send ARP Request for router's WAN/LAN IP address
+Verify valid ARP Reply is returned
+--> Verify MAC address in ARP Reply matches expected MAC address of DUT's WAN interface
+
+APR Request: 
+Target MAC address: 00:00:00_00:00:00 
+Target IP address: x.x.x.x (example 69.76.221.27)
+
+Opcode: request (1)
+
+APR Reply: 
+Target MAC address(broadcast): 00:00:00_00:00:00 
+Target IP address: x.x.x.x (example 69.76.221.27)
+
+Opcode: reply (2)
+Target IP address: 192.168.1.1 (192.168.1.1)
+Target MAC address: Woorigis_9e:d8:00 (00:02:90:9e:d8:00)
+
+
+RARP : Reverse Address resolution protocol
+MAC addresss 對應到IPaddress
+Opcode: reverse request (3)
+
+
+
+
+------------------------------------------
+DHCP: Dynamic Host Configuration Protocol
+------------------------------------------
+
+自動分配IP位址給用戶/用於內部網路管理員作為對所有電腦作中央管理的手段
+
+DHCP discover / OFFER / REQUEST /ACK(Acknowledge) /release /NAK
+伺服器端使用67/udp，用戶端使用68/udp。
+DHCP執行分為四個基本過程，分別為請求IP租約、提供IP租約、選擇IP租約和確認IP租約。
+
+客戶在獲得了一個IP位址以後，就可以傳送一個ARP請求來避免由於DHCP伺服器位址池重疊而引發的IP衝突。
+
+DISCOVER: UDP Src=0.0.0.0 , Sport=68 , Dest=255.255.255.255(broadcast) Dport=67 , option(53)DHCP type:DHCP Discover / Option: (50) Requested IP Address / Option: (55) Parameter Request List
+--DHCP Discover封包
+當DHCP客戶端第一次登錄網路的時候，客戶端發現本機上沒有任何IP參數設定，它會向網路發出一個DHCP Discover廣播封包，來找尋網路上是否有DHCP伺服器可以分配IP位址給它。因為客戶端還不知道自已屬於哪一個網路，所以封包的來源位址會為 0.0.0.0，而目的位址則為255.255.255.255。
+OFFER: UDP Src=192.168.1.1 SPort=67 Dest=192.168.1.100 DdPort=68 , Option(53)DHCP type:offer, Option: (1) Subnet Mask,option:(3) 192.168.1.1 router, Option: (51) IP Address Lease Time, Option: (58) Renewal Time Value, Option: (59) Rebinding Time Value, Option: (54) DHCP Server Identifier DHCP server IP address
+-- 當DHCP伺服器監聽到客戶端發出DHCP Discover廣播後，它會從那些還沒有租出的位址範圍內 ，選擇其中一個IP位址，連同其它IP相關的參數，然後利用DHCP Offer封包回應給客戶端。
+DHCPREQUEST: UDP Src=0.0.0.0 sPort=68 Dest=255.255.255.255 dPort=67 , DHCP option 53: DHCP Request, DHCP option 50: 192.168.1.100 requested , DHCP option 54: 192.168.1.1 DHCP server. Option: (55) Parameter Request List
+-- 如果客戶端收到網路上多台DHCP伺服器的回應。它只會挑選其中一個DHCP Offer 而已(通常是最先抵達的那一個)，並且會向網路發送一個DHCP Request廣播封包，告訴所有DHCP伺服器它將指定接受那一台伺服器提供的IP位址。
+同時客戶端還會向網路發送一個ＡRP封包，查詢網路上有沒有其它機器使用該IP位址。如果發現該IP位址已經被佔用，客戶端則會發送出一個DHCP Decline 封包給DHCP伺服器，拒絕接受其DHCP Offer，並重新發送DHCP Discover封包。
+ACK: DHCPACK: UDP Src=192.168.1.1 SPort=67 Dest=192.168.1.100 DPort=68, DHCP option 53: DHCP ACK , DHCP option 1: 255.255.255.0 subnet mask, DHCP option 3: 192.168.1.1 router, DHCP option 51: 1 day IP lease time , DHCP option 54: 192.168.1.1 DHCP server
+--當DHCP伺服器接收到客戶端的DHCP Request之後，會客戶端發出一個DHCK Ack回應，以確認IP租約的正式生效。
+
+
+
+option dhcp-message-type uint8;
+
+This option, sent by both client and server, specifies the type of DHCP message contained in the DHCP packet. Possible values (taken directly from RFC2132) are:
+
+1 DHCPDISCOVER
+2 DHCPOFFER
+3 DHCPREQUEST
+4 DHCPDECLINE
+5 DHCPACK
+6 DHCPNAK
+7 DHCPRELEASE
+8 DHCPINFORM
+
+DHCPDECLINE
+1) DHCP_DECLINE 交易可以傳回給 DHCP 伺服器。伺服器會再配置裝置不同的 IP 位址
+客戶端還會向網路發送一個ＡRP封包，查詢網路上有沒有其它機器使用該IP位址。如果發現該IP位址已經被佔用，客戶端則會發送出一個DHCP Decline 封包給DHCP伺服器
+
+DHCPNAK
+1) DHCP client drops back into DISCOVERY mode if server sends a DHCPNAK
+
+If the client receives a DHCPNAK message, it cannot reuse its
+    remembered network address.  It must instead request a new
+    address by restarting the configuration process, this time
+    using the (non-abbreviated) procedure described in section
+    
+    
+DHCP Release：用戶端向DHCP伺服器傳送一個請求以釋放DHCP資源，並註銷其IP位址，DHCP Server 會將此IP address 分配給其他使用者。
+
+Verify DHCP server address reservations
+Verify DHCP server returns IP address within configured pool
+
+
+
+
