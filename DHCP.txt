@@ -1,9 +1,7 @@
 protocol: ARP / DHCP 
-date 
 ------------------------------------------
 DHCP: Dynamic Host Configuration Protocol
 ------------------------------------------
-
 自動分配IP位址給用戶/用於內部網路管理員作為對所有電腦作中央管理的手段
 
 DHCP discover / OFFER / REQUEST /ACK(Acknowledge) /release /NAK
