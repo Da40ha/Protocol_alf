@@ -1,5 +1,5 @@
 protocol: ARP / DHCP 
-
+date 
 ------------------------------------------
 DHCP: Dynamic Host Configuration Protocol
 ------------------------------------------
@@ -12,7 +12,10 @@ DHCP執行分為四個基本過程，分別為請求IP租約、提供IP租約、選擇IP租約和確認IP租約。
 
 客戶在獲得了一個IP位址以後，就可以傳送一個ARP請求來避免由於DHCP伺服器位址池重疊而引發的IP衝突。
 
-DISCOVER: UDP Src=0.0.0.0 , Sport=68 , Dest=255.255.255.255(broadcast) Dport=67 , option(53)DHCP type:DHCP Discover / Option: (50) Requested IP Address / Option: (55) Parameter Request List
+DISCOVER: UDP Src=0.0.0.0 , Sport=68 , Dest=255.255.255.255(broadcast) Dport=67 ;
+option(53)DHCP type:DHCP Discover 
+option(50) Requested IP Address
+Option: (55) Parameter Request List
 --DHCP Discover封包
 當DHCP客戶端第一次登錄網路的時候，客戶端發現本機上沒有任何IP參數設定，它會向網路發出一個DHCP Discover廣播封包，來找尋網路上是否有DHCP伺服器可以分配IP位址給它。因為客戶端還不知道自已屬於哪一個網路，所以封包的來源位址會為 0.0.0.0，而目的位址則為255.255.255.255。
 OFFER: UDP Src=192.168.1.1 SPort=67 Dest=192.168.1.100 DdPort=68 , Option(53)DHCP type:offer, Option: (1) Subnet Mask,option:(3) 192.168.1.1 router, Option: (51) IP Address Lease Time, Option: (58) Renewal Time Value, Option: (59) Rebinding Time Value, Option: (54) DHCP Server Identifier DHCP server IP address
