@@ -1,0 +1,37 @@
+Link Aggregation 
+-----------------------------------
+網路聚合-多條實體線路合併為一條邏輯線路
+功能可以讓網路中特定的裝置間通訊速度提升、同時確保備援能力、提升容錯的功能(load blance / failover)
+個通訊協定可以在 switch 對 switch 之間，或 switch 對 PC 之間有連線的需求時，可連接多條實體網路線，以達到網路連線容錯以及增加兩者間頻寬的目的。
+
+Link Aggregation Control Protocol (LACP) is a layer 2 control protocol that can be used to automatically detect, configure and manage, as one logical link, 
+multiple physical links between two adjacent LACP enabled devices. 
+
+IEEE802.3ad LACP
+
+
+a) Static(靜態) 模式
+   : switch 兩邊的連接埠口數量是固定的，而且需要設定成 Link Aggregation Group (LAG) 群組
+      有任何一條連線失敗時，這兩個 switch 間的連線都會失敗了
+   
+b) Dynamic(動態) LACP 模式
+   : LACP (Link aggregation control protocol)
+   透過一段時間後可以找出最適合現在網路狀況的LACP Group，動態的改善網路頻寬的使用
+   兩邊埠口會透過詢問的方式來檢查是否有加入 LAG 群組，如果有的話，就達成 LACP 連線， 不然就略過 LACP 連線
+   
+   -- active :設定為此類別的埠口會主動的詢問連結的對口是否為 LACP
+   -- passive :被動類別，主要是可以回覆 active 的類別，並且被動的達成 LACP 的連線功能
+   
+   必須使用相同的資料傳輸速度，例如全部都是 1Gbits/s 的速度才行；
+   
+   
+Link Aggregation ID：system priority + MAC + KEY + port priority + port Number
+   
+ps:port trunking，[1]link bundling
+
+
+wireshark:
+slow
+slow.lacp.version == 0x01
+eth.type == 0x8809
+

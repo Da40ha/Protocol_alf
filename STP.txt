@@ -1,0 +1,72 @@
+STP: 
+https://www.netadmin.com.tw/article_content.aspx?sn=1802020005&jump=2
+https://osrg.github.io/ryu-book/zh_tw/html/link_aggregation.html
+https://www.jannet.hk/zh-Hant/post/rapid-spanning-tree-protocol-rstp/
+----------------------------
+Spanning Tree Protocol，STP則是生成樹協定的縮寫 , IEEE 802.1d協定
+
+第一步驟就是選出Root Bridge 一個網路中只有一台設備可以當Root Bridge，
+而在Root Bridge上的所有的埠都稱為Designated Port，
+Designated Port通常都是處於Forwarding（轉發）的狀態之中，也就是隨時可以協助轉發（接收並送出）封包。 
+
+交換機A被選為Root Bridge，此時網路上其他的交換機設備就全部都是Non-root Bridge
+
+
+這是整個STP運作的大致流程，以下分別就每個步驟做詳細說明。到這裡為止，請把握幾個大重點： 
+
+1. 每一個網路只能有一個Root Bridge 
+
+2. 每一個Non-root Bridge上只能有一個Root Port 
+
+3. 每一個網路區段（Segment）內只能有一個Designated Port 
+
+4. 每一個Non-designated Port都是被封鎖住，也就是不會作用的。
+
+
+交換機A之MAC位址的值比較低，所以交換機A就是Root Bridge。其實，這個優先序是可以自行更改的，可以依照網管人員的網路規劃做不同的設定。
+
+
+BPDU (bridge protocol data unit)-是switch 間用來傳送STP資訊的frame
+:Bridge id , cost .port id
+ - Bridge Priority: 32768
+ - Root Path Cost: 0
+ - Port identifier: 0x8001
+ 
+aa:bb:cc:00:01:00	Spanning-tree-(for-bridges)_00	STP	60	Conf. TC + Root = 32768/1/aa:bb:cc:00:01:00  Cost = 0  Port = 0x8001
+
+每一台Switch 剛開機時 都會發BPDU  ，直接到到到包含Bridge ID 較小BPDU(superior BPDU)
+BPDU 預設每2秒發送1次 - Hello Time: 2  
+BPDU 儲存20秒 - Max Age: 20 , 即是說如果Switch(也沒有在其他port收到) 過20秒後沒收到BPDU，會判斷Root Switch 已死，會再次發送BPDU
+BPDU Forward Delay -Forward Delay: 15 是調整listening / leraning 狀態的時間
+
+Blocking:
+Switch 開機所有的port都進要先進入Blocking -- 只接收BPDU,不傳送Data frame -防止loop
+
+Listening:
+當switch知道某個port 需要啟動時 就會從blocking  轉到listening , 此時會接收與傳送BPDU，但不傳送Data frame
+會參加Root switch/ Root port / Designated port 選舉 , 這個status會維持一個forward delay time
+
+Learning:
+當一個port成為Root port or Designated port， 它會進入Learning 會接收與傳送BPDU，而且會開始留意DATA frame ，把mac address 記錄到table
+但還是不是傳送data frame, 免得後面需要frame flood 到所有port 而製造多的traffic , 這個status會維持一個forward delay time
+
+Forwarding:
+Port 變成Forwarding , 會收發BPDU, 記錄MAC Address,並傳送data frame
+
+Topology change:
+1) 當一個port 變成forwarding 
+2) 當一個listening 或forwarding 的port 變成blocking or disabled
+
+packet:TCN --> 通知STP裡所有的其他Switch 有topology change，其他switch收到後會改變mac addrss table 的timeout時間改為15秒(forward delay)
+
+
+UDLD --> 用來防止Switch loop
+
+Loop guard
+
+
+
+
+
+
+
