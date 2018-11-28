@@ -1,0 +1,12 @@
+QOS
+-------------------------------
+Quality of Service
+QoS是一種控制機制，它提供了針對不同用戶或者不同資料流採用相應不同的優先級 或者是根據應用程式的要求，保證資料流的效能達到一定的水準
+特別是對於串流多媒體應用，例如VoIP和IPTV等
+控制Bandwidth / software Queue / Packet delay / packet drop 方式維持網路的傳輸品質
+Integrated services
+Differentiated Services 
+
+
+marking
+
