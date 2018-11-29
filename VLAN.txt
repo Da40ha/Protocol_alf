@@ -1,0 +1,35 @@
+VLAN
+-------------------------
+Virtual local area network
+有效分派出入區域網的封包到正確的出入埠, 達到對不同實體區域網中的裝置進行邏輯分群（Grouping）管理
+降低區域網內大量資料流通時 因無用封包過多導致壅塞的問題，以及提昇區域網的資訊安全保障。
+
+VLAN可以為網路提供以下作用：
+
+1) 廣播控制
+2) 頻寬利用
+3) 降低延遲
+4) 安全性（非設計作用，本身功能所附加出的）
+
+Physical layer 劃分:
+直接以交換器上的"port"做為劃分VLAN的基礎
+Port-base Vlan ID --> PVID
+
+Data link layer 劃分:
+以每台主機的"MAC address "做為劃分VLAN的基礎
+
+Network layer 劃分:
+以每台主機的"IP address"做為劃分VLAN的基礎
+
+
+VLAN Identifier, VID
+4094個VLAN的Identifier 
+
+Native VLAN 
+VLAN 1 (default)
+vlan 1 可以來往trunk port 
+
+Packet:
+VLAN標籤有兩部分：VLAN ID（12位元）和PCP（Priority Code Point）（3位元)
+.... 0000 1101 0001 = ID: 209
+000. .... .... .... = Priority: Best Effort (default) (0)

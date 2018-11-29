@@ -1,0 +1,28 @@
+802.1q
+-------------------------------
+VLAN標籤領域必須遵守下列格式:
+16 bits   3 bits 	1 bit 	12 bits
+TPID       PCP 	    CFI 	VID 
+PCP: 從0(最低)到7(最高)，用來對資料流(音訊、影像、檔案等等)作傳輸的優先順序。
+CFI: 若是這個域的值為1，則MAC位址則為非標準格式；若為0，則為標準格式
+VLAN Identifier, VID): 12位元的域，用來具體指出影格是屬於哪個特定VLAN
+12位元的值0x000和0xFFF為保留值，其他的值都可用來做為共4094個VLAN的識別符,
+
+IEEE 802.1Q定義一個關於VLAN連接介質存取控制層和IEEE 802.1D生成樹協定的具體概念模型。這個模型允許各個獨立的VLAN以乙太網路交換機的資料鏈路層或路由器互相連接。 
+
+
+
+-------------------------------
+IEEE 802.1ad
+IEEE 802.1ad或稱為QinQ、vlan stacking, QinQ允許兩個Vlan header被放置在同一個frame中。
+
+
+C-VLAN：Customer VLAN，是用戶網絡內部使用的VLAN；
+
+S-VLAN：Service VLAN，服務提供商網絡中使用的VLAN，該VLAN標識VPN用戶或者是用戶的業務；
+https://www.smwenku.com/a/5b8d34d22b717718833c4717/
+
+C-VLAN Tag    IEEE 802.1Q Tag Protocol Type(802.1Q Tag Type)    8100
+S-VLAN Tag    IEEE 802.1Q Server Tag Type(802.1Q S-Tag Type)    8864 (for pppoe)
+
+
